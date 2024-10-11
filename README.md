@@ -33,3 +33,7 @@ The purpose of this repository is to learn the structure of a web api based on d
 - Add controller endpoints to delete quotes
 - Add controller endpoints to get all quotes of a specified author
 - Add controller endpoints to get all quotes of a specified category
+
+## Optimizations
+
+- Add a limiter to how many quotes are being returned

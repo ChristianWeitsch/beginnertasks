@@ -1,0 +1,6 @@
+@BeginnerTasks_HostAddress = http://localhost:5073
+
+GET {{BeginnerTasks_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

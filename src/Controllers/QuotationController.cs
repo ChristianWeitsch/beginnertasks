@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,7 +18,11 @@ namespace QuotationRueckgabe.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            return Ok(a + b + " " + QuotesArray[1]);
+            Random random = new Random();
+            int randomIndex = random.Next(0, QuotesArray.Length);
+            string randomQuote = QuotesArray[randomIndex];
+
+            return Ok(a + b + " " + randomQuote);
         }
 
     }

@@ -5,16 +5,16 @@ public class Quote
     public Quote()
     {
     }
-    public Quote(int id, string text, string author, string category)
+    public Quote(int id, string type, string location, string category)
     {
         Id = id;
-        Text = text;
-        Author = author;
+        Type = type;
+        Location = location;
         Category = category;
     }
 
     public int Id { get; set; }
-    public string Text { get; set; }
-    public string Author { get; set; }
+    public string Type { get; set; }
+    public string Location { get; set; }
     public string Category { get; set; }
 }

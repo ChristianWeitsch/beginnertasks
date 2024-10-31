@@ -2,9 +2,7 @@
 
 public class Quote
 {
-    public Quote()
-    {
-    }
+   
     public Quote(int id, string type, string location, string category)
     {
         Id = id;

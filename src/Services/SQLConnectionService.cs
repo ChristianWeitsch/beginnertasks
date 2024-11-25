@@ -1,18 +1,27 @@
+using BeginnerTasks.Interfaces;
 using MySql.Data.MySqlClient;
 
 namespace BeginnerTasks.Services;
 
-public class SQLConnectionService{
-    private const string _connectionString = "Server=localhost;Database=Weatherforcast;User ID=root;Password=Test123;SslMode=none;";
-    public MySqlConnection? Databaseconnection{get;set;}
-    public int connectioncounter{get; set;}
-    private void CreateDatabaseConnection(){
+public class SqlConnectionService : ISqlConnectionService
+{
+    private const string _connectionString =
+        "server=127.0.0.1;uid=root;pwd=123456;database=Weatherforcast";
+
+    public MySqlConnection Databaseconnection { get; set; }
+
+    public SqlConnectionService()
+    {
         Databaseconnection = new MySqlConnection(_connectionString);
-        connectioncounter++;
-    }
-    public SQLConnectionService(){
-        if(Databaseconnection is null){
-            CreateDatabaseConnection();
+        if(Databaseconnection is null)
+        {
+            throw new Exception("Connection failed");
         }
+        MigrateDatabase();
+    }
+
+    public void MigrateDatabase()
+    {
+        
     }
 }

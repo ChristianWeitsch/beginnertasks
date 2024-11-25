@@ -8,7 +8,7 @@ namespace BeginnerTasks.Controllers
     [Route("task1/[controller]")]
     public class QuotationController : ControllerBase
     {
-        private string connectionString = "Server=localhost;Database=Weatherforcast;User ID=root;Password=Test123;SslMode=none;";
+        private string connectionString = "server=127.0.0.1;uid=root;pwd=123456;database==Weatherforcast";
 
         [HttpGet]
         public IActionResult Get()

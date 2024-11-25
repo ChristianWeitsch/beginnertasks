@@ -1,52 +1,88 @@
-using System.Security.Cryptography.X509Certificates;
+using System.Data;
+using BeginnerTasks.Interfaces;
 using BeginnerTasks.Models;
 using MySql.Data.MySqlClient;
 
-namespace BeginnerTasks.Services.Quotationservice;
+namespace BeginnerTasks.Services;
 
-public class Quotationservice{
-   // private readonly ILogger<Quotationservice> _logger;
+public class Quotationservice : IQuotationservice
+{
+    private readonly ILogger<Quotationservice> _logger;
+    private readonly MySqlConnection _sqlConnection;
 
-    /*public Quotationservice(ILogger<Quotationservice>logger){
+    public Quotationservice(ISqlConnectionService sqlConnectionService, ILogger<Quotationservice> logger)
+    {
+        _sqlConnection = sqlConnectionService.Databaseconnection;
         _logger = logger;
-    }*/
+    }
+
+    public bool CreateQuoteInDatabase(Quote quote)
+    {
+        var query = $"INSERT INTO weatherinfo (id, type, location, category) VALUES ({quote.Id}, '{quote.Type}', '{quote.Location}', '{quote.Category}')";
+        var cmd = new MySqlCommand(query, _sqlConnection);
+        
+        try
+        {
+            if(_sqlConnection.State == ConnectionState.Closed)
+                _sqlConnection.Open();
+            cmd.ExecuteNonQuery();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex.Message);
+            return false;
+        }
+        finally
+        {
+            if (_sqlConnection.State == ConnectionState.Open)
+                _sqlConnection.Close();
+        }
+    }
 
     public List<Quote> GetQuotesFromDatabase()
+    {
+        List<Quote> quoteList = new List<Quote>();
+
+        try
         {
-            List<Quote> quoteList = new List<Quote>();
-            SQLConnectionService sqlconnectionservice =  new SQLConnectionService();
-            var connection = sqlconnectionservice.Databaseconnection;
-            SQLConnectionService sqlconnectionservice2 =  new SQLConnectionService();
-            var connection2 = sqlconnectionservice.Databaseconnection;
-            SQLConnectionService sqlconnectionservice3 =  new SQLConnectionService();
-            var connection3 = sqlconnectionservice.Databaseconnection;
-            Console.WriteLine($"{sqlconnectionservice3.connectioncounter}");
-           
-            try
+            if(_sqlConnection.State == ConnectionState.Closed)
+                _sqlConnection.Open();
+            string query = "SELECT id, type, location, category FROM weatherinfo";
+
+            MySqlCommand cmd = new MySqlCommand(query, _sqlConnection);
+            using MySqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
             {
-                connection.Open();
-                string query = "SELECT id, type, location FROM weatherinfo LIMIT 16 OFFSET 4";
+                int id = reader.GetInt32("id");
+                string type = reader.GetString("type");
+                string location = reader.GetString("location");
+                string category = reader.GetString("category");
 
-                MySqlCommand cmd = new MySqlCommand(query, connection);
-                MySqlDataReader reader = cmd.ExecuteReader();
-
-                while (reader.Read())
-                {
-                    int id = reader.GetInt32("id");
-                    string type = reader.GetString("type");
-                    string location = reader.GetString("location");
-                    string category = "Weather";
-
-                    Quote quote = new Quote(id, type, location, category);
-                    quoteList.Add(quote);
-                }
+                Quote quote = new Quote(id, type, location, category);
+                quoteList.Add(quote);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Fehler: " + ex.Message);
-            }
-        
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error: " + ex.Message);
+        }
+        finally
+        {
+            if (_sqlConnection.State == ConnectionState.Open)
+                _sqlConnection.Close();
+        }
 
         return quoteList;
-        }
+    }
+
+    public bool UpdateQuoteFromDatabase(Quote quote)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool DeleteQuoteFromDatabase(int id)
+    {
+        throw new NotImplementedException();
+    }
 }

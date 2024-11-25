@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Text.Json.Serialization;
 
@@ -11,17 +10,15 @@ namespace BeginnerTasks.Controllers
     {
         private readonly IMongoCollection<WeatherInfo> _weatherCollection;
 
-        public QuotationControllerMongoDB(IConfiguration configuration)
+        public QuotationControllerMongoDB()
         {
             try
             {
-                var client = new MongoClient(configuration.GetConnectionString("WeatherForCast"));
+                var client = new MongoClient("mongodb://localhost:27017/");
                 var database = client.GetDatabase("WeatherData");
                 _weatherCollection = database.GetCollection<WeatherInfo>("Data");
-
+                _weatherCollection.InsertOne(new WeatherInfo { Id = 1, Type = "Sunny", Location = "Berlin", Date = "2021-09-01" });
                 
-                var command = new BsonDocument { { "ping", 1 } };
-                database.RunCommand<BsonDocument>(command);
             }
             catch (Exception ex)
             {
@@ -50,7 +47,7 @@ namespace BeginnerTasks.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine("Fehler beim Abrufen der Daten: " + ex.Message);
-                return new List<WeatherInfo>();
+                return [];
             }
         }
     }

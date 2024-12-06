@@ -6,7 +6,7 @@ namespace BeginnerTasks.Services;
 public class SqlConnectionService : ISqlConnectionService
 {
     private const string _connectionString =
-        "server=127.0.0.1;uid=root;pwd=123456;database=Weatherforcast";
+        "server=127.0.0.1;uid=root;pwd=1234;database=quotation";
 
     public MySqlConnection Databaseconnection { get; set; }
 

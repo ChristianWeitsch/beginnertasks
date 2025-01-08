@@ -7,54 +7,72 @@ namespace BeginnerTasks.Controllers
 {
     [ApiController]
     [Route("MySQL/Quotes")]
-    public class SQLQuotationController : ControllerBase
+    public class SqlQuotationController : ControllerBase
     {
-        private readonly IQuotationservice _quotationservice;
-        
-        public SQLQuotationController(IQuotationservice quotationservice)
-        {
-            _quotationservice = quotationservice;
-        }
+        private readonly IQuotationService _quotationService;
 
-        [HttpPost]
-        public IActionResult Create([FromBody] Quote quote)
+        public SqlQuotationController(IQuotationService quotationService)
         {
-            var result = _quotationservice.CreateQuoteInDatabase(quote);
-            return result ? Ok("Creation successful") : BadRequest("Creation failed");
+            _quotationService = quotationService;
         }
 
         [HttpGet]
-        public IActionResult Get([FromQuery] string? filterType = null, [FromQuery] string? filterValue = null, string? filterLenght = null)
+        public async Task<IActionResult> GetAll()
         {
-            var quoteList = _quotationservice.GetQuotesFromDatabase(filterType, filterValue, filterLenght);
-
-
-            if (filterLenght == "0")
-            {
-                return NotFound("Deine Filtereinstellung unter LenghLimit ist auf 0!");
-            }
-            if (quoteList.Count == 0)
-            {
-                return NotFound("Es wurden keine Daten gefunden, die mit dem Filter übereinstimmen!");
-            }
-
-
-            return Ok(quoteList);
+            var quotes = await _quotationService.GetAllAsync();
+            return Ok(quotes);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var quote = await _quotationService.GetByIdAsync(id);
+            if (quote == null)
+            {
+                return BadRequest("Keine Daten mit dieser ID gefunden");
+            }
+
+            return Ok(quote);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] Quote quote)
+        {
+            if (quote == null)
+            {
+                return BadRequest("Ungültige Daten");
+            }
+
+            var result = await _quotationService.AddAsync(quote);
+            if (result)
+            {
+                return Ok("Erfolgreich erstellt");
+            }
+            else
+            {
+                return BadRequest("Erstellung fehlgeschlagen");
+            }
+        }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Quote quote)
+        public async Task<IActionResult> Update([FromBody] Quote quote)
         {
-            var isSuccessful = _quotationservice.UpdateQuoteFromDatabase(quote);
-            return isSuccessful ? Ok("Update successful") : BadRequest("Update failed");
+            var existingQuote = await _quotationService.GetByIdAsync(quote.Id);
+            if (existingQuote == null)
+            {
+                return BadRequest("Keine Daten gefunden");
+            }
+
+            var result = await _quotationService.UpdateAsync(quote);
+            return result? Ok("Daten wurden erfolgreich gespeichert"): BadRequest("Fehler bei speichern");
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var isSuccessful = _quotationservice.DeleteQuoteFromDatabase(id);
-            return isSuccessful ? Ok("Deleted successful") : BadRequest("Delete failed");
+            var result = await _quotationService.DeleteAsync(id);
+
+            return result ? Ok("Erfolgreich gelöscht"): BadRequest("Fehler beim löschen");
         }
     }
 }

@@ -2,14 +2,6 @@
 
 public class Quote
 {
-   
-    public Quote(int id, string name, string quoteText, string type)
-    {
-        Id = id;
-        Name = name;
-        QuoteText = quoteText;
-        Type = type;
-    }
 
     public int Id { get; set; }
     public string Name { get; set; }

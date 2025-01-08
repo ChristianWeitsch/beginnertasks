@@ -1,5 +1,7 @@
+using BeginnerTasks.Data;
 using BeginnerTasks.Interfaces;
 using BeginnerTasks.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,10 +12,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IQuotationservice, Quotationservice>();
-builder.Services.AddSingleton<ISqlConnectionService, SqlConnectionService>();
-
+// builder.Services.AddSingleton<IOldQuotationservice, OldQuotationservice>();
+// builder.Services.AddSingleton<ISqlConnectionService, SqlConnectionService>();
+builder.Services.AddScoped<IQuotationService, EfCoreQuotationService>();
+builder.Services.AddDbContext<DataContext>(x =>
+    x.UseMySQL("server=127.0.0.1;uid=root;pwd=1234;database=quotationDatabase"));
 var app = builder.Build();
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+{
+    var context = serviceScope.ServiceProvider.GetService<DataContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

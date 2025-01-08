@@ -1,22 +1,20 @@
 using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using BeginnerTasks.Interfaces;
 using BeginnerTasks.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using MongoDB.Driver;
 using MySql.Data.MySqlClient;
+
 
 namespace BeginnerTasks.Services;
 
-public class Quotationservice : IQuotationservice
+public class OldQuotationservice : IOldQuotationservice
 {
-    private readonly ILogger<Quotationservice> _logger;
+    private readonly ILogger<OldQuotationservice> _logger;
     private readonly MySqlConnection _sqlConnection;
 
     public string? filterType { get; private set; }
     public string? filterValue { get; private set; }
 
-    public Quotationservice(ISqlConnectionService sqlConnectionService, ILogger<Quotationservice> logger)
+    public OldQuotationservice(ISqlConnectionService sqlConnectionService, ILogger<OldQuotationservice> logger)
     {
         _sqlConnection = sqlConnectionService.Databaseconnection;
         _logger = logger;
@@ -94,7 +92,7 @@ public class Quotationservice : IQuotationservice
                     string quoteText = reader.GetString("quote");
                     string type = reader.GetString("type");
 
-                    Quote quote = new Quote(id, name, quoteText, type);
+                    Quote quote = new Quote(){Id=id, Name=name, QuoteText=quoteText, Type=type};
                     quoteList.Add(quote);
                 }
             }

@@ -36,11 +36,11 @@ namespace BeginnerTasks.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Quote quote)
+        public async Task<IActionResult> Create([FromBody] QuoteRequest quote)
         {
             if (quote == null)
             {
-                return BadRequest("Ungültige Daten");
+                return BadRequest("Ungï¿½ltige Daten");
             }
 
             var result = await _quotationService.AddAsync(quote);
@@ -72,7 +72,7 @@ namespace BeginnerTasks.Controllers
         {
             var result = await _quotationService.DeleteAsync(id);
 
-            return result ? Ok("Erfolgreich gelöscht"): BadRequest("Fehler beim löschen");
+            return result ? Ok("Erfolgreich gelï¿½scht"): BadRequest("Fehler beim lï¿½schen");
         }
     }
 }

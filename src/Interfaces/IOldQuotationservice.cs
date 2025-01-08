@@ -12,9 +12,9 @@ public interface IOldQuotationservice
 
 public interface IQuotationService
 {
-    Task<List<Quote>> GetAllAsync();
+    Task<List<QuoteResponse>> GetAllAsync();
     Task<Quote?> GetByIdAsync(int id);
-    Task <bool> AddAsync(Quote quotation);
+    Task <bool> AddAsync(QuoteRequest quoteRequest);
     Task <bool> UpdateAsync(Quote quotation);
     Task <bool> DeleteAsync(int id);
 }

@@ -16,7 +16,7 @@ builder.Services.AddSwaggerGen();
 // builder.Services.AddSingleton<ISqlConnectionService, SqlConnectionService>();
 builder.Services.AddScoped<IQuotationService, EfCoreQuotationService>();
 builder.Services.AddDbContext<DataContext>(x =>
-    x.UseMySQL("server=127.0.0.1;uid=root;pwd=1234;database=quotationDatabase"));
+    x.UseMySQL("server=127.0.0.1;uid=root;pwd=123456;database=quotationDatabase"));
 var app = builder.Build();
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
